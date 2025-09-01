@@ -1,0 +1,66 @@
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE (IntelliJ/Android Studio) ---
+*.iml
+# Ignore everything in .idea, then allowlist a few folders worth sharing
+.idea/*
+!.idea/codeStyles/
+!.idea/runConfigurations/
+!.idea/inspectionProfiles/
+
+# --- Gradle ---
+.gradle/
+**/build/
+build/
+
+# Keep the Gradle wrapper in VCS
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# --- Local machine config ---
+local.properties
+keystore.properties
+
+# --- Android / NDK build artifacts ---
+.cxx/
+.externalNativeBuild/
+obj/
+captures/
+gen-external-apklibs
+output.json
+
+# --- App artifacts ---
+*.apk
+*.ap_
+*.aab
+
+# --- Logs / profiling ---
+*.log
+*.hprof
+hs_err_pid*
+replay_pid*
+
+# --- Java/Kotlin compiled classes ---
+*.class
+
+# --- Keystores (never commit real keys) ---
+*.jks
+*.keystore
+
+# --- Google services (optional; keep out unless you intend to share) ---
+**/google-services.json
+
+# --- Legacy/Eclipse (in case they appear) ---
+.classpath
+.project
+.cproject
+.settings/
+
+# --- Crashlytics / Fabric (old setups) ---
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties

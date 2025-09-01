@@ -1,0 +1,12 @@
+<resources>
+    <!-- Minimal MD3 app theme for Compose-first apps -->
+    <style name="Theme.LKWangsit" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Optional: edge-to-edge. Safe to keep. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- DO NOT put colorPrimaryVariant / colorSecondaryVariant here (M2-only). -->
+        <!-- If you need overrides, use MD3 names like colorPrimary, colorPrimaryContainer, etc. -->
+    </style>
+</resources>
