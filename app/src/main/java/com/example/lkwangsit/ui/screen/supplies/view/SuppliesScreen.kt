@@ -5,22 +5,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.lkwangsit.R
 import com.example.lkwangsit.theme.LKWangsitTheme
+import com.example.lkwangsit.ui.component.DialogConfirm
 import com.example.lkwangsit.ui.component.enums.Severity
 import com.example.lkwangsit.ui.component.datalist.DataList
 import com.example.lkwangsit.ui.component.SegmentedTabMenu
@@ -49,26 +56,125 @@ fun SuppliesScreen() {
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var showFilterSheet by rememberSaveable { mutableStateOf(false) }
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    var showActivateDialog by rememberSaveable { mutableStateOf(false) }
+    var showInactivateDialog by rememberSaveable { mutableStateOf(false) }
+
+    val deleteDialogMessage by remember(
+        state.selectedIds, state.selectedId, state.supplies
+    ) {
+        derivedStateOf {
+            when {
+                state.selectedIds.isNotEmpty() -> {
+                    val n = state.selectedIds.size
+                    buildAnnotatedString {
+                        append("You have selected ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("$n data")
+                        }
+                        append(" to be deleted. Are you sure you want to continue?")
+                    }
+                }
+                !state.selectedId.isNullOrBlank() -> {
+                    val item = state.supplies.firstOrNull { it.id == state.selectedId }
+                    val name = item?.title ?: "This item"
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(name)
+                        }
+                        append(" will be deleted. Are you sure you want to delete it?")
+                    }
+                }
+                else -> {
+                    AnnotatedString("Are you sure you want to delete?")
+                }
+            }
+        }
+    }
+
+    val activateDialogMessage by remember(
+        state.selectedIds, state.selectedId, state.supplies
+    ) {
+        derivedStateOf {
+            when {
+                state.selectedIds.isNotEmpty() -> {
+                    val n = state.selectedIds.size
+                    buildAnnotatedString {
+                        append("You have selected ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("$n supplier(s)")
+                        }
+                        append(" to be activated. Are you sure you want to continue?")
+                    }
+                }
+                !state.selectedId.isNullOrBlank() -> {
+                    val item = state.supplies.firstOrNull { it.id == state.selectedId }
+                    val name = item?.title ?: "This item"
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(name)
+                        }
+                        append(" will be activated. Are you sure you want to activate it?")
+                    }
+                }
+                else -> {
+                    AnnotatedString("Are you sure you want to activate?")
+                }
+            }
+        }
+    }
+
+    val inactivateDialogMessage by remember(
+        state.selectedIds, state.selectedId, state.supplies
+    ) {
+        derivedStateOf {
+            when {
+                state.selectedIds.isNotEmpty() -> {
+                    val n = state.selectedIds.size
+                    buildAnnotatedString {
+                        append("You have selected ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("$n supplier(s)")
+                        }
+                        append(" to be inactivated. Are you sure you want to continue?")
+                    }
+                }
+                !state.selectedId.isNullOrBlank() -> {
+                    val item = state.supplies.firstOrNull { it.id == state.selectedId }
+                    val name = item?.title ?: "This item"
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(name)
+                        }
+                        append(" will be inactivated. Are you sure you want to inactivate it?")
+                    }
+                }
+                else -> {
+                    AnnotatedString("Are you sure you want to inactivate?")
+                }
+            }
+        }
+    }
 
     val actions: List<SingleActionMenu> = listOf(
         SingleActionMenu(
-            severity = Severity.INFO,
-            actionName = "Edit",
-            actionIconVector = Icons.Default.Edit,
-            action = {},
+            severity = Severity.SECONDARY,
+            actionName = "Activate",
+            actionIconVector = Icons.Default.Check,
+            action = { showActivateDialog = true },
+        ),
+        SingleActionMenu(
+            severity = Severity.SECONDARY,
+            actionName = "Inactivate",
+            actionIconVector = Icons.Default.Close,
+            action = { showInactivateDialog = true },
         ),
         SingleActionMenu(
             severity = Severity.ERROR,
             actionName = "Delete",
             actionIconRes = R.drawable.ic_delete_bin,
-            action = { vm.onDeleteClick() },
+            action = { showDeleteDialog = true },
         ),
-        SingleActionMenu(
-            severity = Severity.SUCCESS,
-            actionName = "Mark as Done",
-            actionIconVector = Icons.Default.Check,
-            action = {},
-        )
     )
 
     LaunchedEffect(vm, snackbarHostState, lifecycleOwner) {
@@ -85,7 +191,7 @@ fun SuppliesScreen() {
                         )
                         if (res == SnackbarResult.ActionPerformed) {
                             when (val r = event.retry) {
-                                is UiEvent.Retry.Delete -> vm.onDeleteClick()
+                                is UiEvent.Retry.Delete -> vm.onDeleteSupplies()
                                 null -> Unit
                             }
                         }
@@ -159,13 +265,52 @@ fun SuppliesScreen() {
             onReset = vm::resetFilters
         )
     }
-}
 
+    if (showDeleteDialog) {
+        DialogConfirm(
+            iconRes = R.drawable.ic_delete_bin,
+            iconVector = null,
+            title = "Delete Supply",
+            message = deleteDialogMessage,
+            onDismissRequest = { showDeleteDialog = false },
+            onCancel = { showDeleteDialog = false },
+            onConfirm = {
+                vm.onDeleteSupplies()
+                showDeleteDialog = false
+            },
+            severity = Severity.ERROR,
+        )
+    }
 
-@Preview
-@Composable
-fun SuppliesScreenPreview() {
-    LKWangsitTheme(dynamicColor = false) {
-        SuppliesScreen()
+    if (showActivateDialog) {
+        DialogConfirm(
+            iconRes = null,
+            iconVector = Icons.Default.Check,
+            title = "Activate Supply",
+            message = activateDialogMessage,
+            onDismissRequest = { showActivateDialog = false },
+            onCancel = { showActivateDialog = false },
+            onConfirm = {
+                vm.onActivateSupplies()
+                showActivateDialog = false
+            },
+            severity = Severity.SUCCESS
+        )
+    }
+
+    if (showInactivateDialog) {
+        DialogConfirm(
+            iconRes = null,
+            iconVector = Icons.Default.Close,
+            title = "Inactivate Supply",
+            message = inactivateDialogMessage,
+            onDismissRequest = { showInactivateDialog = false },
+            onCancel = { showInactivateDialog = false },
+            onConfirm = {
+                vm.inactivateSupplies()
+                showInactivateDialog = false
+            },
+            severity = Severity.ERROR
+        )
     }
 }

@@ -36,7 +36,9 @@ fun SnackBar(
     val content = severity.textColor()
 
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         shape = RoundedCornerShape(percent = 50),
         color = container,
         contentColor = content,

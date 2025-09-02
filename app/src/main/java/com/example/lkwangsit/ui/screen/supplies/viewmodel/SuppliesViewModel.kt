@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.libs.base.Result
 import com.example.libs.data.source.network.model.request.supply.DeleteSuppliesBody
 import com.example.libs.data.source.network.model.request.supply.GetSuppliesQueryParams
+import com.example.libs.data.source.network.model.request.supply.PatchStatusSuppliesBody
 import com.example.libs.domain.supply.DeleteSuppliesUseCase
 import com.example.libs.domain.supply.GetSuppliesUseCase
+import com.example.libs.domain.supply.PatchStatusSuppliesUseCase
 import com.example.lkwangsit.ui.component.enums.Severity
 import com.example.lkwangsit.ui.component.ChipItem
 import com.example.lkwangsit.ui.component.datalist.DataItem
@@ -24,13 +26,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SuppliesViewModel @Inject constructor(
     private val getSuppliesUseCase: GetSuppliesUseCase,
     private val deleteSuppliesUseCase: DeleteSuppliesUseCase,
+    private val patchStatusSuppliesUseCase: PatchStatusSuppliesUseCase
 ) : ViewModel() {
 
     //region State
@@ -47,7 +49,7 @@ class SuppliesViewModel @Inject constructor(
     }
 
     //region Intents (public)
-    fun onDeleteClick() {
+    fun onDeleteSupplies() {
         _state.update { it.copy(isLoading = true) }
 
         val ids: List<String> =
@@ -84,6 +86,72 @@ class SuppliesViewModel @Inject constructor(
         Log.i("item", "delete")
 
         refresh()
+    }
+
+    fun onActivateSupplies() {
+        _state.update { it.copy(isLoading = true) }
+
+        val ids: List<String> =
+            state.value.selectedIds.takeIf { it.isNotEmpty() }?.toList()
+                ?: listOfNotNull(state.value.selectedId)
+
+        patchStatusSuppliesUseCase(PatchStatusSuppliesBody(
+            supplierID = ids,
+            status = "Active"
+        )).onEach { result ->
+            when (result) {
+                is Result.Success -> {
+                    _state.update { it.copy(isLoading = false) }
+                    _events.send(UiEvent.Snackbar(
+                        message = "Success, supplier has been activated.",
+                        severity = Severity.SUCCESS,
+                        withDismissAction = false,
+                    ))
+                }
+                is Result.Error -> {
+                    _state.update { it.copy(isLoading = false) }
+                    _events.send(UiEvent.Snackbar(
+                        message = "Error, failed to activate supplier. Please check your connection and try again.",
+                        severity = Severity.ERROR,
+                        withDismissAction = false,
+                    ))
+                }
+            }
+        }.launchIn(viewModelScope)
+
+        refresh()
+    }
+
+    fun inactivateSupplies() {
+        _state.update { it.copy(isLoading = true) }
+
+        val ids: List<String> =
+            state.value.selectedIds.takeIf { it.isNotEmpty() }?.toList()
+                ?: listOfNotNull(state.value.selectedId)
+
+        patchStatusSuppliesUseCase(PatchStatusSuppliesBody(
+            supplierID = ids,
+            status = "Inactive"
+        )).onEach { result ->
+            when (result) {
+                is Result.Success -> {
+                    _state.update { it.copy(isLoading = false) }
+                    _events.send(UiEvent.Snackbar(
+                        message = "Success, supplier has been inactivated.",
+                        severity = Severity.SUCCESS,
+                        withDismissAction = false,
+                    ))
+                }
+                is Result.Error -> {
+                    _state.update { it.copy(isLoading = false) }
+                    _events.send(UiEvent.Snackbar(
+                        message = "Error, failed to inactivate supplier. Please check your connection and try again.",
+                        severity = Severity.ERROR,
+                        withDismissAction = false,
+                    ))
+                }
+            }
+        }
     }
 
     fun applyFilters(values: Map<String, FilterValue>) {

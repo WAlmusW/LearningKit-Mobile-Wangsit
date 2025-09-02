@@ -5,6 +5,7 @@ import com.example.libs.data.mapper.SupplyMapper
 import com.example.libs.data.model.SupplyEntity
 import com.example.libs.data.source.network.model.request.supply.DeleteSuppliesBody
 import com.example.libs.data.source.network.model.request.supply.GetSuppliesQueryParams
+import com.example.libs.data.source.network.model.request.supply.PatchStatusSuppliesBody
 import com.example.libs.data.source.network.model.response.supply.GetSuppliesResponse
 import com.example.libs.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,6 +34,14 @@ class FakeSupplyRepositoryImpl @Inject constructor(
         emit(Result.Success(mock))
     }.catch { e ->
         emit(Result.Error<Int>(e.message ?: "Unknown error"))
+    }.flowOn(ioDispatcher)
+
+    override fun patchStatusSupplies(body: PatchStatusSuppliesBody): Flow<Result<Any>> = flow<Result<Any>> {
+        val mock = Any()
+
+        emit(Result.Success(mock))
+    }.catch { e ->
+        emit(Result.Error<Any>(e.message ?: "Unknown error"))
     }.flowOn(ioDispatcher)
 
 

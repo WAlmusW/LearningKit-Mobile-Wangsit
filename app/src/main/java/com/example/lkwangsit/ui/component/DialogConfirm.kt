@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,7 @@ fun DialogConfirm(
     iconRes: Int? = null,
     iconVector: ImageVector? = null,
     title: String,
-    message: String,
+    message: AnnotatedString,
     cancelButtonLabel: String = "Cancel",
     confirmButtonLabel: String = "Confirm",
     onDismissRequest: () -> Unit,
@@ -114,6 +115,29 @@ fun DialogConfirm(
         }
     }
 }
+
+fun String.asAnnotated(): AnnotatedString = AnnotatedString(this)
+
+@Composable
+fun DialogConfirm(
+    iconRes: Int? = null,
+    iconVector: ImageVector? = null,
+    title: String,
+    message: String,
+    onDismissRequest: () -> Unit,
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+    severity: Severity
+) = DialogConfirm(
+    iconRes = iconRes,
+    iconVector = iconVector,
+    title = title,
+    message = message.asAnnotated(),
+    onDismissRequest = onDismissRequest,
+    onCancel = onCancel,
+    onConfirm = onConfirm,
+    severity = severity
+)
 
 
 @Preview

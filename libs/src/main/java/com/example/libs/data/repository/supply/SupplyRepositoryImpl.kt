@@ -6,6 +6,7 @@ import com.example.libs.data.model.SupplyEntity
 import com.example.libs.data.source.network.datasource.SupplyApiDataSource
 import com.example.libs.data.source.network.model.request.supply.DeleteSuppliesBody
 import com.example.libs.data.source.network.model.request.supply.GetSuppliesQueryParams
+import com.example.libs.data.source.network.model.request.supply.PatchStatusSuppliesBody
 import com.example.libs.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +42,22 @@ class SupplyRepositoryImpl @Inject constructor(
     override fun deleteSupplies(body: DeleteSuppliesBody): Flow<Result<Int>> = flow {
         if (token.isNotBlank()) {
             val response = supplyApiDataSource.deleteSupplies(token, body)
+
+            if (response.isSuccessful && response.code() == 200) {
+                emit(Result.Success(response.body()?.data ?: 0))
+            } else {
+                emit(Result.Error("Response is not successful"))
+            }
+        } else {
+            emit(Result.Error("Token is empty"))
+        }
+    }.catch {
+        emit(Result.Error(it.message))
+    }.flowOn(ioDispatcher)
+
+    override fun patchStatusSupplies(body: PatchStatusSuppliesBody): Flow<Result<Any>> = flow {
+        if (token.isNotBlank()) {
+            val response = supplyApiDataSource.patchStatusSupplies(token, body)
 
             if (response.isSuccessful && response.code() == 200) {
                 emit(Result.Success(response.body()?.data ?: 0))
