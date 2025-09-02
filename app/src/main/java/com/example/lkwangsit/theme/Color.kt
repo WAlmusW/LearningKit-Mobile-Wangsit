@@ -20,6 +20,9 @@ val LightRed              = Color(0xFFFFCCD3)
 val Gray700               = Color(0xFF4B4D4E)
 val Gray200               = Color(0xFFE5E6E6)
 
+val LavenderGray          = Color(0xFFB5B3C7)
+val DarkLavenderGray      = Color(0xFF6C688D)
+
 val OutlineLight          = Color(0xFFE0E3E7)
 val OutlineDark           = Color(0xFF3A3D40)
 
@@ -39,6 +42,8 @@ data class ExtraColors(
     val onError: Color,
     val secondary: Color,
     val onSecondary: Color,
+    val neutral: Color,
+    val onNeutral: Color,
 )
 
 val LocalExtraColors = staticCompositionLocalOf {
@@ -48,7 +53,9 @@ val LocalExtraColors = staticCompositionLocalOf {
         error = LightRed,
         onError = Red,
         secondary = Gray200,
-        onSecondary = Gray700
+        onSecondary = Gray700,
+        neutral = LavenderGray,
+        onNeutral = DarkLavenderGray
     )
 }
 

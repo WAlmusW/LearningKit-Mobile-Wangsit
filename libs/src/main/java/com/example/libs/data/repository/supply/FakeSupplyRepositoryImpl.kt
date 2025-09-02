@@ -3,6 +3,7 @@ package com.example.libs.data.repository.supply
 import com.example.libs.base.Result
 import com.example.libs.data.mapper.SupplyMapper
 import com.example.libs.data.model.SupplyEntity
+import com.example.libs.data.source.network.model.request.supply.DeleteSuppliesBody
 import com.example.libs.data.source.network.model.request.supply.GetSuppliesQueryParams
 import com.example.libs.data.source.network.model.response.supply.GetSuppliesResponse
 import com.example.libs.di.IoDispatcher
@@ -25,6 +26,15 @@ class FakeSupplyRepositoryImpl @Inject constructor(
     }.catch { e ->
         emit(Result.Error<List<SupplyEntity>>(e.message ?: "Unknown error"))
     }.flowOn(ioDispatcher)
+
+    override fun deleteSupplies(body: DeleteSuppliesBody): Flow<Result<Int>> = flow<Result<Int>> {
+        val mock = 5
+
+        emit(Result.Success(mock))
+    }.catch { e ->
+        emit(Result.Error<Int>(e.message ?: "Unknown error"))
+    }.flowOn(ioDispatcher)
+
 
     private fun mockNetworkModels(): List<GetSuppliesResponse.Data.Data> = listOf(
         // 1) PT. ABC Indonesia — Active

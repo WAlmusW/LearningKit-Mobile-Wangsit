@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.lkwangsit.R
 import com.example.lkwangsit.theme.LKWangsitTheme
 import com.example.lkwangsit.theme.LocalExtraColors
-import com.example.lkwangsit.ui.Severity
+import com.example.lkwangsit.ui.component.enums.Severity
 import com.example.lkwangsit.ui.component.datalist.SingleActionMenu
 
 @Composable

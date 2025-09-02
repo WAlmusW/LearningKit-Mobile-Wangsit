@@ -4,6 +4,7 @@ import com.example.libs.base.Result
 import com.example.libs.data.mapper.SupplyMapper
 import com.example.libs.data.model.SupplyEntity
 import com.example.libs.data.source.network.datasource.SupplyApiDataSource
+import com.example.libs.data.source.network.model.request.supply.DeleteSuppliesBody
 import com.example.libs.data.source.network.model.request.supply.GetSuppliesQueryParams
 import com.example.libs.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,6 +28,22 @@ class SupplyRepositoryImpl @Inject constructor(
 
             if (response.isSuccessful && response.code() == 200) {
                 emit(Result.Success(supplyMapper.mapSupplies(resData)))
+            } else {
+                emit(Result.Error("Response is not successful"))
+            }
+        } else {
+            emit(Result.Error("Token is empty"))
+        }
+    }.catch {
+        emit(Result.Error(it.message))
+    }.flowOn(ioDispatcher)
+
+    override fun deleteSupplies(body: DeleteSuppliesBody): Flow<Result<Int>> = flow {
+        if (token.isNotBlank()) {
+            val response = supplyApiDataSource.deleteSupplies(token, body)
+
+            if (response.isSuccessful && response.code() == 200) {
+                emit(Result.Success(response.body()?.data ?: 0))
             } else {
                 emit(Result.Error("Response is not successful"))
             }

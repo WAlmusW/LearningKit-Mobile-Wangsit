@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.lkwangsit.theme.LKWangsitTheme
-import com.example.lkwangsit.ui.Severity
+import com.example.lkwangsit.ui.component.enums.Severity
 import com.example.lkwangsit.ui.component.ActionsSheet
 import com.example.lkwangsit.ui.component.Chip
 import com.example.lkwangsit.ui.component.ChipGroup
@@ -186,9 +186,9 @@ fun DataListPreview() {
         DataItem(
             id = "1",
             status = ChipItem("Active", Severity.SUCCESS),
-            title = "Supplier A",
+            title = "Supplies A",
             subtitle = "Category: Raw Materials",
-            description = "This is a description of Supplier A with some details.",
+            description = "This is a description of Supplies A with some details.",
             listItem = listOf(
                 ChipItem("PO Required", Severity.INFO),
                 ChipItem("Priority", Severity.WARNING),
@@ -201,9 +201,9 @@ fun DataListPreview() {
         DataItem(
             id = "2",
             status = ChipItem("Inactive", Severity.ERROR),
-            title = "Supplier B",
+            title = "Supplies B",
             subtitle = "Category: Finished Goods",
-            description = "Description of Supplier B.",
+            description = "Description of Supplies B.",
             listItem = listOf(
                 ChipItem("Documents Missing", Severity.ERROR),
                 ChipItem("Follow Up", Severity.SECONDARY)

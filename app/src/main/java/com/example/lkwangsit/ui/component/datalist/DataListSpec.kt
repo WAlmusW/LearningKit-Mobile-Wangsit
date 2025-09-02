@@ -1,7 +1,7 @@
 package com.example.lkwangsit.ui.component.datalist
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.lkwangsit.ui.Severity
+import com.example.lkwangsit.ui.component.enums.Severity
 import com.example.lkwangsit.ui.component.ChipItem
 
 

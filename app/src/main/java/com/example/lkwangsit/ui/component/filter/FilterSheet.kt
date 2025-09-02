@@ -71,7 +71,10 @@ fun FilterSheet(
                     Text("Filter", style = MaterialTheme.typography.titleMedium)
                     TextButton(
                         enabled = !currentValues.values.isEmpty(),
-                        onClick = { onReset?.invoke() }
+                        onClick = {
+                            onReset?.invoke()
+                            currentValues.clear()
+                        }
                     ) { Text("Reset") }
                 }
 
@@ -127,7 +130,7 @@ private fun OptionsSection(
                     if (next.selectedOptions.isEmpty()) values.remove(spec.id)
                     else values[spec.id] = next
                 },
-                label = { Text(opt.label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                label = { Text(opt.label, style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 shape = RoundedCornerShape(50),
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -309,7 +312,7 @@ private fun SectionHeader(
 @Preview(showBackground = true)
 @Composable
 fun FilterSheetPreview() {
-    val supplierOpts = listOf(
+    val SuppliesOpts = listOf(
         Option("sup-abc", "PT. ABC Indonesia"),
         Option("sup-bcd", "PT. BCD Indonesia"),
         Option("sup-opq", "PT. OPQ Indonesia"),
@@ -339,9 +342,9 @@ fun FilterSheetPreview() {
             showSeeAll = false
         ),
         OptionsFilterSpec(
-            id = "supplier",
-            title = "Supplier",
-            options = supplierOpts,
+            id = "Supplies",
+            title = "Supplies",
+            options = SuppliesOpts,
             limitShown = 3,
             showSeeAll = true
         ),
@@ -368,7 +371,7 @@ fun FilterSheetPreview() {
     // Optional: seed some initial values for preview
     val initial = mapOf(
         "active" to OptionFilterValue(specId = "active", selectedOptions = setOf("active")),
-        "supplier" to OptionFilterValue(specId = "supplier", selectedOptions = setOf("sup-abc"))
+        "Supplies" to OptionFilterValue(specId = "Supplies", selectedOptions = setOf("sup-abc"))
     )
 
     LKWangsitTheme(dynamicColor = false) {

@@ -6,21 +6,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.lkwangsit.ui.screen.supplierlist.view.SupplierListScreen
+import com.example.lkwangsit.ui.screen.supplies.view.SuppliesScreen
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = NavigationRoute.SupplierList.route
+    startDestination: String = NavigationRoute.Supplies.route
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(route = NavigationRoute.SupplierList.route) {
-            SupplierListScreen()
+        composable(route = NavigationRoute.Supplies.route) {
+            SuppliesScreen()
         }
     }
 }

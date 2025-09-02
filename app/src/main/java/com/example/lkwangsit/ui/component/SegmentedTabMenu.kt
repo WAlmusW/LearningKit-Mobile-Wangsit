@@ -97,7 +97,7 @@ fun SegmentedTabMenu(
                     ) {
                         Text(
                             text = label,
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.labelMedium,
                             textAlign = TextAlign.Center,
                             color = if (selected)
                                 MaterialTheme.colorScheme.onPrimary

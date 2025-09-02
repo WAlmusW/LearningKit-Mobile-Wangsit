@@ -28,6 +28,7 @@ fun TopBar(
     title: String? = null,
     actions: List<SingleActionMenu>,
     selectedIds: Set<String>,
+    onBackButtonClick: (() -> Unit)?,
     onFilterButtonClick: (() -> Unit)?,
     onSearchButtonClick: (() -> Unit)?,
     onDownloadButtonClick: (() -> Unit)?,
@@ -36,7 +37,7 @@ fun TopBar(
     TopAppBar(
         title = { Text(text = title ?: "Supplier List") },
         navigationIcon = {
-            IconButton(onClick = {  }) {
+            IconButton(onClick = { onBackButtonClick?.invoke() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
@@ -139,6 +140,7 @@ fun TopBarPreview() {
         TopBar(
             actions = sampleActions,
             selectedIds = selectedIds,
+            onBackButtonClick = {},
             onFilterButtonClick = {},
             onSearchButtonClick = {},
             onDownloadButtonClick = {},
@@ -171,6 +173,7 @@ fun TopBarBulkPreview() {
         TopBar(
             actions = sampleActions,
             selectedIds = selectedIds,
+            onBackButtonClick = {},
             onFilterButtonClick = {},
             onSearchButtonClick = {},
             onDownloadButtonClick = {},
